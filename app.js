@@ -506,6 +506,24 @@ JSON만 출력. 코드블록·설명·메타 코멘트 금지. 첫 글자는 {.
 - "title": 한국어 짧은 제목.
 - "seed": 한국어, 생성기에 바로 넣을 수 있는 지침형 아이디어 본문.`,
 
+  recommendWorldNsfw: `당신은 AI 채팅용 "성인(NSFW) 세계관 소재(아이디어 시드)"를 제안하는 전문가입니다.
+사용자가 원하는 설정·장르·분위기를 주면, 그 방향에 맞는 서로 다른 성인 세계관 소재를 다양하게 제안하세요. 모든 등장 인물은 성인(18세 이상)입니다.
+
+규칙:
+- 각 소재는 '세계관 생성기'의 아이디어 입력란에 그대로 붙여넣어 쓸 수 있는 지침형 아이디어여야 합니다 (2~4문장: 핵심 컨셉 + 차별 포인트 + 분위기/톤 + 이 세계의 성문화·관능·금기를 보여주는 훅 한 줄).
+- 성적 긴장·관능·금기의 축이 분명히 드러나되, 개별 인물의 노골적 행위 나열이 아니라 "세계의 설정·규범·관습" 차원으로 제시.
+- 소재끼리 서로 겹치지 않게, 클리셰는 비틀어 다양하게. 요청한 개수와 정확히 일치.
+
+## 출력 형식 (절대 규칙)
+JSON만 출력. 코드블록·설명·메타 코멘트 금지. 첫 글자는 {.
+{
+  "items": [
+    { "title": "짧은 제목", "seed": "세계관 생성기에 넣을 아이디어 본문" }
+  ]
+}
+- "title": 한국어 짧은 제목.
+- "seed": 한국어, 생성기에 바로 넣을 수 있는 지침형 아이디어 본문.`,
+
   recommendChar: `당신은 AI 채팅용 캐릭터의 "소재(아이디어 시드)"를 제안하는 전문가입니다.
 사용자가 원하는 설정·장르·분위기·관계성을 주면, 그 방향에 맞는 서로 다른 캐릭터 소재를 다양하게 제안하세요.
 
@@ -513,6 +531,24 @@ JSON만 출력. 코드블록·설명·메타 코멘트 금지. 첫 글자는 {.
 - 각 소재는 '캐릭터 생성기'의 아이디어 입력란에 그대로 붙여넣어 쓸 수 있는 지침형 아이디어여야 합니다 (2~4문장: 핵심 성격·역할 + 외형/분위기 한 줄 + 매력 포인트나 갈등의 씨앗 + {{user}}와의 관계 훅).
 - 소재끼리 성격·역할이 겹치지 않게, 클리셰는 비틀어 다양하게 구성.
 - 사용자가 요청한 개수와 정확히 일치하게 생성.
+
+## 출력 형식 (절대 규칙)
+JSON만 출력. 코드블록·설명·메타 코멘트 금지. 첫 글자는 {.
+{
+  "items": [
+    { "title": "짧은 제목", "seed": "캐릭터 생성기에 넣을 아이디어 본문" }
+  ]
+}
+- "title": 한국어 짧은 제목(캐릭터 컨셉).
+- "seed": 한국어, 생성기에 바로 넣을 수 있는 지침형 아이디어 본문.`,
+
+  recommendCharNsfw: `당신은 AI 채팅용 "성인(NSFW) 캐릭터 소재(아이디어 시드)"를 제안하는 전문가입니다.
+사용자가 원하는 설정·장르·분위기·관계성을 주면, 그 방향에 맞는 서로 다른 성인 캐릭터 소재를 다양하게 제안하세요. 모든 등장 인물은 성인(18세 이상)입니다.
+
+규칙:
+- 각 소재는 '캐릭터 생성기'의 아이디어 입력란에 그대로 붙여넣어 쓸 수 있는 지침형 아이디어여야 합니다 (2~4문장: 핵심 성격·역할 + 외형/분위기 한 줄 + 성적 매력·성향이나 관능적 갈등의 씨앗 + {{user}}와의 관계 훅).
+- 성적 성향·관능·관계의 긴장이 분명히 드러나되, 노골적 행위 나열이 아니라 캐릭터를 매력적으로 구상할 수 있는 시드로 제시.
+- 소재끼리 성격·역할이 겹치지 않게, 클리셰는 비틀어 다양하게. 요청한 개수와 정확히 일치.
 
 ## 출력 형식 (절대 규칙)
 JSON만 출력. 코드블록·설명·메타 코멘트 금지. 첫 글자는 {.
@@ -1490,16 +1526,21 @@ function renderRecOutput() {
 }
 
 function useSeed(isWorld, title, seed) {
+  const nsfw = !!state.rec.nsfw;
   setView('generate');
   setGTab(isWorld ? 'world' : 'char');
   if (isWorld) {
     $('#worldIdea').value = seed;
     if (title && !$('#worldName').value.trim()) $('#worldName').value = title;
+    $('#worldNsfwMode').checked = nsfw;
+    $('#worldNsfwToggle').classList.toggle('checked', nsfw);
   } else {
     $('#charIdea').value = seed;
     if (title && !$('#charName').value.trim()) $('#charName').value = title;
+    $('#charNsfwMode').checked = nsfw;
+    $('#charNsfwToggle').classList.toggle('checked', nsfw);
   }
-  toast('생성기에 입력됨 — 옵션 확인 후 생성하세요');
+  toast(nsfw ? '생성기에 입력됨 (NSFW 모드 켜짐) — 옵션 확인 후 생성하세요' : '생성기에 입력됨 — 옵션 확인 후 생성하세요');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1514,10 +1555,14 @@ async function generateRecommend() {
   if (!desire) { toast('원하는 설정/장르를 입력해주세요'); return; }
   const count = parseInt($('#recCount').value);
   const isWorld = state.rec.tab === 'world';
-  const systemPrompt = isWorld ? state.systemPrompts.recommendWorld : state.systemPrompts.recommendChar;
-  const userPrompt = `## 원하는 방향\n${desire}\n\n위 방향에 맞는 서로 다른 ${isWorld ? '세계관' : '캐릭터'} 소재를 정확히 ${count}개 제안하세요. 각 소재는 생성기에 그대로 넣을 수 있는 지침형 아이디어(seed)여야 합니다. 반드시 지정된 JSON만 출력하세요.`;
+  const isNsfw = $('#recNsfwMode').checked;
+  const systemPrompt = isWorld
+    ? (isNsfw ? state.systemPrompts.recommendWorldNsfw : state.systemPrompts.recommendWorld)
+    : (isNsfw ? state.systemPrompts.recommendCharNsfw : state.systemPrompts.recommendChar);
+  const userPrompt = `## 원하는 방향\n${desire}\n\n위 방향에 맞는 서로 다른 ${isNsfw ? '성인(NSFW) ' : ''}${isWorld ? '세계관' : '캐릭터'} 소재를 정확히 ${count}개 제안하세요. 각 소재는 생성기에 그대로 넣을 수 있는 지침형 아이디어(seed)여야 합니다.${isNsfw ? ' (모든 등장 인물은 성인 18세 이상)' : ''} 반드시 지정된 JSON만 출력하세요.`;
 
   state.rec.busy = true;
+  state.rec.nsfw = isNsfw;
   state.rec.output = ''; state.rec.parsed = null;
   state.rec.abort = new AbortController();
   $('#recGenerateBtn').disabled = true;
@@ -1727,7 +1772,7 @@ function closeDetail() { $('#detailBackdrop').classList.add('hidden'); detailCtx
 /* ============================================================
    16. 설정
    ============================================================ */
-const SP_KEYS = ['world', 'worldNsfw', 'char', 'charNsfw', 'persona', 'personaNsfw', 'enhance', 'enhanceNsfw', 'intro', 'asset', 'assetNsfw', 'recommendWorld', 'recommendChar'];
+const SP_KEYS = ['world', 'worldNsfw', 'char', 'charNsfw', 'persona', 'personaNsfw', 'enhance', 'enhanceNsfw', 'intro', 'asset', 'assetNsfw', 'recommendWorld', 'recommendWorldNsfw', 'recommendChar', 'recommendCharNsfw'];
 
 function loadSettingsInputs() {
   $('#anthropicKey').value = state.keys.anthropic || '';
@@ -1855,6 +1900,8 @@ function bind() {
   $$('[data-rec-tab]').forEach(t => t.onclick = () => setRecTab(t.dataset.recTab));
   $('#recCount').oninput = () => $('#recCountVal').textContent = $('#recCount').value;
   $('#recCount').onchange = () => persistOpts('recommend');
+  const recTog = $('#recNsfwToggle'), recIn = $('#recNsfwMode');
+  recIn.onchange = () => recTog.classList.toggle('checked', recIn.checked);
   $('#recGenerateBtn').onclick = generateRecommend;
 
   // ===== 보관함 =====

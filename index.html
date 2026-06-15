@@ -292,7 +292,9 @@
             <div class="field"></div>
           </div>
           <div class="flex-between mt-18">
-            <span class="muted">각 소재는 [이 소재로 생성]으로 바로 생성기에 넣을 수 있습니다.</span>
+            <label class="nsfw-toggle" id="recNsfwToggle">
+              <input type="checkbox" id="recNsfwMode"><span class="dot"></span><span>🔞 NSFW 소재</span>
+            </label>
             <button class="btn btn-primary" id="recGenerateBtn">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               세계관 소재 추천
@@ -738,9 +740,19 @@
             <button class="btn btn-sm btn-ghost mt-12" data-reset-sp="recommendWorld">기본값으로 복원</button>
           </div>
           <div class="field">
+            <label class="label">소재 추천 (세계관 NSFW)</label>
+            <textarea class="textarea tall code" id="sp-recommendWorldNsfw"></textarea>
+            <button class="btn btn-sm btn-ghost mt-12" data-reset-sp="recommendWorldNsfw">기본값으로 복원</button>
+          </div>
+          <div class="field">
             <label class="label">소재 추천 (캐릭터)</label>
             <textarea class="textarea tall code" id="sp-recommendChar"></textarea>
             <button class="btn btn-sm btn-ghost mt-12" data-reset-sp="recommendChar">기본값으로 복원</button>
+          </div>
+          <div class="field">
+            <label class="label">소재 추천 (캐릭터 NSFW)</label>
+            <textarea class="textarea tall code" id="sp-recommendCharNsfw"></textarea>
+            <button class="btn btn-sm btn-ghost mt-12" data-reset-sp="recommendCharNsfw">기본값으로 복원</button>
           </div>
           <button class="btn btn-primary" id="savePromptsBtn">시스템 프롬프트 저장</button>
         </div>
