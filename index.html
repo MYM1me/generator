@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Character Forge — AI 캐릭터/세계관/페르소나 메이커</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="light">
+
+<button class="mobile-menu-btn" id="mobileMenuBtn" title="메뉴">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">Character<span class="logo-mark">Forge</span></div>
+      <div class="logo-sub">World · Character · Persona</div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-view="generate">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        세계관 / 캐릭터
+      </button>
+      <button class="nav-item" data-view="recommend">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/></svg>
+        소재 추천
+      </button>
+      <button class="nav-item" data-view="persona">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        페르소나 메이커
+      </button>
+      <button class="nav-item" data-view="intro">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+        소개 페이지
+      </button>
+      <button class="nav-item" data-view="asset">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="10" r="1" fill="currentColor"/><circle cx="15" cy="10" r="1" fill="currentColor"/></svg>
+        에셋 태그
+      </button>
+      <button class="nav-item" data-view="library">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        보관함
+      </button>
+      <button class="nav-item" data-view="settings">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        설정
+      </button>
+    </nav>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="sidebar-footer">
+      <span class="muted" id="footerVersion">v2.0</span>
+      <button class="icon-btn" id="themeToggle" title="테마 전환" style="width: 28px; height: 28px;">
+        <svg id="themeIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+    <div class="main-inner">
+
+      <!-- ============================================================
+           VIEW: GENERATE (세계관 / 캐릭터)
+           ============================================================ -->
+      <section id="view-generate" class="view">
+        <header class="page-header">
+          <h1 class="page-title">세계관 / <em>캐릭터</em> 생성</h1>
+          <p class="page-subtitle">아이디어를 적으면 AI가 인지하기 좋은 형식의 채팅용 지침으로 완성합니다.</p>
+        </header>
+
+        <div class="tabs">
+          <button class="tab active" data-gtab="world">세계관</button>
+          <button class="tab" data-gtab="char">캐릭터</button>
+        </div>
+
+        <!-- WORLD TAB -->
+        <div id="gtab-world" class="gtab-panel">
+          <div class="card">
+            <h2 class="card-title">세계관 설정</h2>
+            <p class="card-desc">출력 형식과 아이디어를 입력하세요.</p>
+            <div class="field">
+              <label class="label">출력 형식</label>
+              <div class="radio-group">
+                <input type="radio" name="worldFormat" id="wf-mixed" value="mixed" checked>
+                <label for="wf-mixed">혼합</label>
+                <input type="radio" name="worldFormat" id="wf-prose" value="prose">
+                <label for="wf-prose">산문형</label>
+                <input type="radio" name="worldFormat" id="wf-keyword" value="keyword">
+                <label for="wf-keyword">키워드형</label>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">세계관 이름 <span class="label-hint">(저장 시 사용)</span></label>
+              <input type="text" class="input" id="worldName" placeholder="예: 서드 에테르의 잿빛 도시">
+            </div>
+            <div class="field">
+              <label class="label">아이디어 / 설명</label>
+              <textarea class="textarea tall" id="worldIdea" placeholder="예: 중세풍 도시국가, 마법은 금기시되지만 지하에서 거래된다. 분위기는 차갑고 음습하며 끊임없이 비가 내린다..."></textarea>
+            </div>
+            <label class="nsfw-toggle" id="worldNsfwToggle">
+              <input type="checkbox" id="worldNsfwMode"><span class="dot"></span><span>🔞 NSFW 세계관 모드</span>
+            </label>
+            <span class="label-hint">이 세계의 성문화·관능·금기를 설정으로서 직접적으로 다룹니다.</span>
+          </div>
+        </div>
+
+        <!-- CHAR TAB -->
+        <div id="gtab-char" class="gtab-panel hidden">
+          <div class="card">
+            <h2 class="card-title">캐릭터 설정</h2>
+            <p class="card-desc">사용할 양식을 고르고 아이디어를 입력하세요.</p>
+            <div class="field">
+              <label class="label">양식 선택</label>
+              <div class="chip-row" id="templateChips"></div>
+              <details class="mt-8">
+                <summary style="cursor: pointer; font-size: 12.5px; color: var(--text-dim);">선택한 양식 미리보기 / 편집 (이번 생성에만 적용)</summary>
+                <textarea class="textarea code mt-8" id="charTemplateOverride" style="min-height: 220px;" placeholder="양식을 골라주세요"></textarea>
+              </details>
+            </div>
+            <div class="field">
+              <label class="label">캐릭터 이름 <span class="label-hint">(저장 시 사용)</span></label>
+              <input type="text" class="input" id="charName" placeholder="예: 이세린">
+            </div>
+            <div class="field">
+              <label class="label">아이디어 / 설명</label>
+              <textarea class="textarea tall" id="charIdea" placeholder="예: 20대 후반 여성 검사. 차갑고 무뚝뚝하지만 동물에게는 한없이 약하다. 과거 친구의 죽음으로 인한 트라우마가 있고..."></textarea>
+            </div>
+            <div class="field">
+              <label class="nsfw-toggle" id="charNsfwToggle">
+                <input type="checkbox" id="charNsfwMode"><span class="dot"></span><span>🔞 NSFW 캐릭터 모드</span>
+              </label>
+              <span class="label-hint">양식의 NSFW 항목을 페르소나급으로 노골적·구체적으로 채웁니다.</span>
+            </div>
+            <div class="field">
+              <label class="check">
+                <input type="checkbox" id="useWorldContext">
+                세계관 참조해서 생성 <span class="label-hint">(저장된 것 선택 또는 직접 입력)</span>
+              </label>
+              <div id="worldRefPanel" class="hidden inset-panel">
+                <select class="select" id="worldRefSelect" style="margin-bottom: 8px;"></select>
+                <textarea class="textarea code" id="worldRefBody" style="min-height: 160px;" placeholder="세계관 설정을 직접 입력하거나, 위에서 선택해 불러온 뒤 편집하세요..."></textarea>
+              </div>
+            </div>
+            <div class="field">
+              <label class="check">
+                <input type="checkbox" id="nsfwOnlyMode">
+                🔞 NSFW 보강 모드 <span class="label-hint">(기존 캐릭터 설정에 NSFW만 추가/강화)</span>
+              </label>
+              <div id="nsfwOnlyPanel" class="hidden inset-panel">
+                <div class="field">
+                  <label class="label">기존 캐릭터 설정 <span class="label-hint">(불러오거나 직접 붙여넣기)</span></label>
+                  <select class="select" id="nsfwBaseCharSelect" style="margin-bottom: 8px;"></select>
+                  <textarea class="textarea code" id="nsfwBaseChar" style="min-height: 200px;" placeholder="기존 캐릭터 설정을 붙여넣거나 위에서 선택하세요..."></textarea>
+                </div>
+                <div class="field">
+                  <label class="label">NSFW 추가 요청 <span class="label-hint">(선택, 비워두면 알아서 보강)</span></label>
+                  <textarea class="textarea" id="nsfwRequest" placeholder="예: 도미넌트 성향 강조, 특정 페티시 추가, 말투 예시 5개 이상..."></textarea>
+                </div>
+                <p class="muted">※ 이 모드에서는 양식 선택과 위의 아이디어 입력란은 무시됩니다.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GENERATION OPTIONS (공통) -->
+        <div class="card" data-opts="generate">
+          <h2 class="card-title">생성 옵션</h2>
+          <div class="field-row cols-2">
+            <div class="field">
+              <label class="label">AI 제공자</label>
+              <select class="select" data-opt-provider></select>
+            </div>
+            <div class="field">
+              <label class="label">모델</label>
+              <select class="select" data-opt-model></select>
+            </div>
+          </div>
+          <div class="field-row cols-2">
+            <div class="field">
+              <label class="label">최대 출력 토큰 <span class="label-hint">(max_tokens)</span></label>
+              <div class="slider-row">
+                <input type="range" class="slider" data-opt-maxtokens min="1024" max="64000" step="512" value="8192">
+                <span class="slider-val" data-opt-maxtokens-val></span>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">최대 추론 토큰 <span class="label-hint">(thinking)</span></label>
+              <div class="slider-row">
+                <input type="range" class="slider" data-opt-think min="0" max="32000" step="512" value="0">
+                <span class="slider-val" data-opt-think-val></span>
+              </div>
+            </div>
+          </div>
+          <p class="muted" style="margin-top: -8px;">추론 토큰을 0보다 크게 설정하면 extended thinking이 활성화됩니다. (max_tokens보다 작아야 함)</p>
+          <div class="flex-between mt-18">
+            <label class="check"><input type="checkbox" id="genAutoSave" checked> 생성 후 자동 저장</label>
+            <button class="btn btn-primary" id="generateBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              생성하기
+            </button>
+          </div>
+        </div>
+
+        <!-- OUTPUT -->
+        <div class="output-card">
+          <div class="output-header">
+            <div class="output-title">
+              <span class="status-dot" id="genStatusDot"></span>
+              <span id="genStatusText">대기 중</span>
+            </div>
+            <div class="output-actions">
+              <button class="btn btn-sm btn-ghost" id="genCopyBtn">복사</button>
+              <button class="btn btn-sm btn-ghost" id="genDownloadBtn">.txt 다운로드</button>
+              <button class="btn btn-sm btn-primary" id="genSaveBtn">저장</button>
+            </div>
+          </div>
+          <div id="genThinkingWrap" class="hidden"></div>
+          <textarea class="output-textarea" id="genOutput" placeholder="여기에 결과가 생성됩니다. 생성 후 자유롭게 편집한 뒤 저장할 수 있어요."></textarea>
+          <div class="output-meta"><span id="genCharCount">0 글자</span><span></span></div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: RECOMMEND (소재 추천)
+           ============================================================ -->
+      <section id="view-recommend" class="view hidden">
+        <header class="page-header">
+          <h1 class="page-title">세계관 / 캐릭터 <em>소재 추천</em></h1>
+          <p class="page-subtitle">원하는 설정·장르를 입력하면 바로 생성에 쓸 수 있는 지침형 소재를 여러 개 제안합니다.</p>
+        </header>
+
+        <div class="tabs">
+          <button class="tab active" data-rec-tab="world">세계관 소재</button>
+          <button class="tab" data-rec-tab="char">캐릭터 소재</button>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">입력</h2>
+          <p class="card-desc">장르·분위기·키워드 등 원하는 방향을 자유롭게 적으세요.</p>
+          <div class="field">
+            <label class="label" id="recInputLabel">원하는 세계관 설정 / 장르</label>
+            <textarea class="textarea tall" id="recInput" placeholder="예: 비 내리는 사이버펑크 도시, 느와르 분위기, 기업이 지배하는 디스토피아..."></textarea>
+          </div>
+        </div>
+
+        <div class="card" data-opts="recommend">
+          <h2 class="card-title">생성 옵션</h2>
+          <div class="field-row cols-2">
+            <div class="field">
+              <label class="label">AI 제공자</label>
+              <select class="select" data-opt-provider></select>
+            </div>
+            <div class="field">
+              <label class="label">모델</label>
+              <select class="select" data-opt-model></select>
+            </div>
+          </div>
+          <div class="field-row cols-2">
+            <div class="field">
+              <label class="label">소재 개수 <span class="label-hint">(최소 10)</span></label>
+              <div class="slider-row">
+                <input type="range" class="slider" id="recCount" min="10" max="30" step="1" value="12">
+                <span class="slider-val" id="recCountVal">12</span>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">최대 출력 토큰</label>
+              <div class="slider-row">
+                <input type="range" class="slider" data-opt-maxtokens min="2048" max="64000" step="512" value="8192">
+                <span class="slider-val" data-opt-maxtokens-val></span>
+              </div>
+            </div>
+          </div>
+          <div class="field-row cols-2">
+            <div class="field">
+              <label class="label">최대 추론 토큰</label>
+              <div class="slider-row">
+                <input type="range" class="slider" data-opt-think min="0" max="32000" step="512" value="0">
+                <span class="slider-val" data-opt-think-val></span>
+              </div>
+            </div>
+            <div class="field"></div>
+          </div>
+          <div class="flex-between mt-18">
+            <span class="muted">각 소재는 [이 소재로 생성]으로 바로 생성기에 넣을 수 있습니다.</span>
+            <button class="btn btn-primary" id="recGenerateBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              세계관 소재 추천
+            </button>
+          </div>
+        </div>
+
+        <div class="output-card">
+          <div class="output-header">
+            <div class="output-title">
+              <span class="status-dot" id="recStatusDot"></span>
+              <span id="recStatusText">대기 중</span>
+            </div>
+          </div>
+          <div class="output-body" id="recOutput"></div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: PERSONA (페르소나 메이커)
+           ============================================================ -->
+      <section id="view-persona" class="view hidden">
+        <header class="page-header">
+          <h1 class="page-title">페르소나 <em>메이커</em></h1>
+          <p class="page-subtitle">세계관과 캐릭터에 어울리는 당신({{user}})의 페르소나를 만들어줍니다.</p>
+        </header>
+
+        <div class="card">
+          <h2 class="card-title">입력</h2>
+          <p class="card-desc">세계관 · 캐릭터 설정 · 아이디어 중 하나 이상을 채우면 됩니다.</p>
+          <div class="field">
+            <label class="label">세계관 <span class="label-hint">(선택)</span></label>
+            <select class="select" id="pmWorldSelect" style="margin-bottom: 8px;"></select>
+            <textarea class="textarea code" id="pmWorldBody" placeholder="세계관 설정을 붙여넣거나 위에서 선택하세요..."></textarea>
+          </div>
+          <div class="field">
+            <label class="label">캐릭터 설정 <span class="label-hint">(선택)</span></label>
+            <select class="select" id="pmCharSelect" style="margin-bottom: 8px;"></select>
+            <textarea class="textarea code" id="pmCharBody" placeholder="대화 상대가 될 캐릭터 설정을 붙여넣거나 위에서 선택하세요..."></textarea>
+          </div>
+          <div class="field">
+            <label class="label">아이디어 / 추가 요청 <span class="label-hint">(선택)</span></label>
+            <textarea class="textarea" id="pmIdea" placeholder="예: 캐릭터와 어릴 적부터 알고 지낸 소꿉친구. 차분하고 사색적인 성격. 직업은 도서관 사서..."></textarea>
+          </div>
+        </div>
+
+        <div class="card" data-opts="persona">
+          <h2 class="card-title">생성 옵션</h2>
+          <div class="field-row cols-2">
+            <div class="field">
+              <label class="label">AI 제공자</label>
+              <select class="select" data-opt-provider></select>
+            </div>
+            <div class="field">
+              <label class="label">모델</label>
+              <select class="select" data-opt-model></select>
+            </div>
+          </div>
+          <div class="field-row cols-2">
+            <div class="field">
+              <label class="label">최대 출력 토큰</label>
+              <div class="slider-row">
+                <input type="range" class="slider" data-opt-maxtokens min="512" max="32000" step="256" value="4096">
+                <span class="slider-val" data-opt-maxtokens-val></span>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">최대 추론 토큰</label>
+              <div class="slider-row">
+                <input type="range" class="slider" data-opt-think min="0" max="32000" step="512" value="0">
+                <span class="slider-val" data-opt-think-val></span>
+              </div>
+            </div>
+          </div>
+          <div class="flex-between mt-18">
+            <label class="nsfw-toggle" id="pmNsfwToggle">
+              <input type="checkbox" id="pmNsfw"><span class="dot"></span><span>NSFW 모드</span>
+            </label>
+            <div class="flex-row">
+              <button class="btn btn-ghost" id="pmStopBtn" style="display:none;">중단</button>
+              <button class="btn btn-primary" id="pmGenerateBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                페르소나 생성
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="output-card">
+          <div class="output-header">
+            <div class="output-title">
+              <span class="status-dot" id="pmStatusDot"></span>
+              <span id="pmStatusText">대기 중</span>
+              <span class="tag nsfw hidden" id="pmNsfwTag">NSFW</span>
+            </div>
+            <div class="output-actions">
+              <button class="btn btn-sm btn-ghost" id="pmEnhanceBtn" disabled>일반 보강</button>
+              <button class="btn btn-sm btn-nsfw" id="pmEnhanceNsfwBtn" disabled>NSFW 보강</button>
+              <button class="btn btn-sm btn-ghost" id="pmCopyBtn">복사</button>
+              <button class="btn btn-sm btn-ghost" id="pmDownloadBtn">.txt</button>
+              <button class="btn btn-sm btn-primary" id="pmSaveBtn">저장</button>
+            </div>
+          </div>
+          <div id="pmThinkingWrap" class="hidden"></div>
+          <textarea class="output-textarea" id="pmOutput" placeholder="여기에 페르소나가 생성됩니다. 생성 후 자유롭게 편집할 수 있어요."></textarea>
+          <div class="output-meta"><span id="pmCharCount">0 글자</span><span></span></div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: INTRO (소개 페이지)
+           ============================================================ -->
+      <section id="view-intro" class="view hidden">
+        <header class="page-header">
+          <h1 class="page-title">캐릭터 <em>소개 페이지</em></h1>
+          <p class="page-subtitle">{{user}}가 시작 전에 알아두면 좋은 정보만 담은 HTML 소개 페이지를 생성합니다.</p>
+        </header>
+
+        <div class="card">
+          <h2 class="card-title">입력</h2>
+          <p class="card-desc">캐릭터는 저장된 것에서 선택하거나 직접 붙여넣으세요.</p>
+          <div class="field">
+            <label class="label">캐릭터 설정 <span class="label-hint">(필수)</span></label>
+            <select class="select" id="introCharSelect" style="margin-bottom: 8px;"></select>
+            <textarea class="textarea code" id="introCharBody" style="min-height: 180px;" placeholder="캐릭터 설정을 붙여넣거나 위에서 선택하세요..."></textarea>
+          </div>
+          <div class="field">
+            <label class="label">세계관 설정 <span class="label-hint">(선택)</span></label>
+            <select class="select" id="introWorldSelect" style="margin-bottom: 8px;"></select>
+            <textarea class="textarea code" id="introWorldBody" style="min-height: 120px;" placeholder="세계관을 함께 참조하려면 선택하거나 직접 붙여넣으세요 (선택)..."></textarea>
+          </div>
+          <div class="field">
+            <label class="label">디자인/내용 추가 요청 <span class="label-hint">(선택)</span></label>
+            <textarea class="textarea" id="introExtraIdea" placeholder="예: 다크 판타지 분위기로, 카드형 레이아웃 위주, 트라우마는 강조하지 말고 호불호 위주로..."></textarea>
+          </div>
+        </div>
+
+        <div class="card" data-opts="intro">
+          <h2 class="card-title">생성 옵션</h2>
+          <div class="field-row cols-2">
+            <div class="field">
+              <label class="label">AI 제공자</label>
+              <select class="select" data-opt-provider></select>
+            </div>
+            <div class="field">
+              <label class="label">모델</label>
+              <select class="select" data-opt-model></select>
+            </div>
+          </div>
+          <div class="field-row cols-2">
+            <div class="field">
+              <label class="label">최대 출력 토큰</label>
+              <div class="slider-row">
+                <input type="range" class="slider" data-opt-maxtokens min="2048" max="64000" step="512" value="16384">
+                <span class="slider-val" data-opt-maxtokens-val></span>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">최대 추론 토큰</label>
+              <div class="slider-row">
+                <input type="range" class="slider" data-opt-think min="0" max="32000" step="512" value="0">
+                <span class="slider-val" data-opt-think-val></span>
+              </div>
+            </div>
+          </div>
+          <div class="flex-between mt-18">
+            <label class="check"><input type="checkbox" id="introAutoSave" checked> 생성 후 자동 저장</label>
+            <button class="btn btn-primary" id="introGenerateBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              소개 페이지 생성
+            </button>
+          </div>
+        </div>
+
+        <div class="output-card">
+          <div class="output-header">
+            <div class="output-title">
+              <span class="status-dot" id="introStatusDot"></span>
+              <span id="introStatusText">대기 중</span>
+            </div>
+            <div class="output-actions">
+              <button class="btn btn-sm btn-ghost" id="introCopyBtn">코드 복사</button>
+              <button class="btn btn-sm btn-ghost" id="introDownloadBtn">.html</button>
+              <button class="btn btn-sm btn-ghost" id="introSaveBtn">저장</button>
+              <button class="btn btn-sm btn-ghost" id="introOpenBtn">새 창에서 열기</button>
+            </div>
+          </div>
+          <div class="intro-split">
+            <div class="intro-pane">
+              <div class="intro-pane-header">
+                <span>HTML 코드</span>
+                <span style="text-transform: none; font-weight: 400; color: var(--text-faint); font-size: 11px;" id="introCodeStat"></span>
+              </div>
+              <div class="intro-code" id="introCode"></div>
+            </div>
+            <div class="intro-pane">
+              <div class="intro-pane-header">
+                <span>실시간 미리보기</span>
+                <label class="check" style="font-size: 11px; text-transform: none; letter-spacing: 0;">
+                  <input type="checkbox" id="introLivePreview" checked> 스트리밍 중 갱신
+                </label>
+              </div>
+              <iframe class="intro-preview-frame hidden" id="introPreview" sandbox="allow-same-origin"></iframe>
+              <div class="intro-empty-preview" id="introPreviewEmpty">생성된 페이지가 여기 표시됩니다.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: ASSET (에셋 태그)
+           ============================================================ -->
+      <section id="view-asset" class="view hidden">
+        <header class="page-header">
+          <h1 class="page-title">캐릭터 <em>에셋 태그</em></h1>
+          <p class="page-subtitle">캐릭터 설정을 기반으로 NAI 에셋용 장면별 태그를 일괄 생성합니다. (JSON 다운로드)</p>
+        </header>
+
+        <div class="tabs">
+          <button class="tab asset-tab active" data-asset-tab="sfw">일반 에셋</button>
+          <button class="tab asset-tab" data-asset-tab="nsfw">NSFW 에셋</button>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">입력</h2>
+          <p class="card-desc">캐릭터는 저장된 것에서 선택하거나 직접 붙여넣으세요.</p>
+          <div class="field">
+            <label class="label">캐릭터 이름 <span class="label-hint">(JSON에 저장됨)</span></label>
+            <input type="text" class="input" id="assetCharName" placeholder="예: 이로하">
+          </div>
+          <div class="field">
+            <label class="label">캐릭터 설정 <span class="label-hint">(필수)</span></label>
+            <select class="select" id="assetCharSelect" style="margin-bottom: 8px;"></select>
+            <textarea class="textarea code" id="assetCharBody" style="min-height: 180px;" placeholder="캐릭터 설정을 붙여넣거나 위에서 선택하세요..."></textarea>
+          </div>
+          <div class="field">
+            <label class="label">세계관 설정 <span class="label-hint">(선택)</span></label>
+            <select class="select" id="assetWorldSelect" style="margin-bottom: 8px;"></select>
+            <textarea class="textarea code" id="assetWorldBody" style="min-height: 120px;" placeholder="세계관을 함께 참조하려면 선택하거나 직접 붙여넣으세요 (선택)..."></textarea>
+          </div>
+          <div class="field">
+            <label class="label">추가 요청 <span class="label-hint">(선택)</span></label>
+            <textarea class="textarea" id="assetExtraIdea" placeholder="예: 학교 배경 위주로, 특정 의상이 반복되게, 특정 장면 포함..."></textarea>
+          </div>
+        </div>
+
+        <div class="card" data-opts="asset">
+          <h2 class="card-title">생성 옵션</h2>
+          <div class="field-row cols-2">
+            <div class="field">
+              <label class="label">AI 제공자</label>
+              <select class="select" data-opt-provider></select>
+            </div>
+            <div class="field">
+              <label class="label">모델</label>
+              <select class="select" data-opt-model></select>
+            </div>
+          </div>
+          <div class="field-row cols-2">
+            <div class="field">
+              <label class="label">장면 개수 <span class="label-hint">(scenes)</span></label>
+              <div class="slider-row">
+                <input type="range" class="slider" id="assetSceneCount" min="6" max="30" step="1" value="14">
+                <span class="slider-val" id="assetSceneCountVal">14</span>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">최대 출력 토큰</label>
+              <div class="slider-row">
+                <input type="range" class="slider" data-opt-maxtokens min="2048" max="64000" step="512" value="16384">
+                <span class="slider-val" data-opt-maxtokens-val></span>
+              </div>
+            </div>
+          </div>
+          <div class="field-row cols-2">
+            <div class="field">
+              <label class="label">최대 추론 토큰</label>
+              <div class="slider-row">
+                <input type="range" class="slider" data-opt-think min="0" max="32000" step="512" value="0">
+                <span class="slider-val" data-opt-think-val></span>
+              </div>
+            </div>
+            <div class="field"></div>
+          </div>
+          <div class="flex-between mt-18">
+            <span class="muted">상반신·얼굴 위주, 캐릭터 해석에 맞춘 표현으로 생성됩니다.</span>
+            <button class="btn btn-primary" id="assetGenerateBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              에셋 태그 생성
+            </button>
+          </div>
+        </div>
+
+        <div class="output-card">
+          <div class="output-header">
+            <div class="output-title">
+              <span class="status-dot" id="assetStatusDot"></span>
+              <span id="assetStatusText">대기 중</span>
+            </div>
+            <div class="output-actions">
+              <button class="btn btn-sm btn-ghost" id="assetCopyBtn">JSON 복사</button>
+              <button class="btn btn-sm btn-ghost" id="assetDownloadBtn">.json 다운로드</button>
+            </div>
+          </div>
+          <div class="output-body" id="assetOutput"></div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: LIBRARY (보관함)
+           ============================================================ -->
+      <section id="view-library" class="view hidden">
+        <header class="page-header">
+          <h1 class="page-title"><em>보관함</em></h1>
+          <p class="page-subtitle">저장된 세계관 · 캐릭터 · 페르소나 · 소개 페이지와 캐릭터 양식을 관리합니다.</p>
+        </header>
+
+        <div class="tabs">
+          <button class="tab lib-tab active" data-lib-tab="worlds">세계관</button>
+          <button class="tab lib-tab" data-lib-tab="chars">캐릭터</button>
+          <button class="tab lib-tab" data-lib-tab="personas">페르소나</button>
+          <button class="tab lib-tab" data-lib-tab="intros">소개 페이지</button>
+          <button class="tab lib-tab" data-lib-tab="templates">양식</button>
+        </div>
+
+        <div class="card">
+          <div class="flex-between" style="margin-bottom: 16px;">
+            <div>
+              <h2 class="card-title" id="libTitle">세계관</h2>
+              <p class="card-desc" style="margin-bottom: 0;" id="libDesc">새로 추가하거나 편집할 수 있습니다.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" id="libNewBtn">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span id="libNewLabel">새 세계관</span>
+            </button>
+          </div>
+          <div id="libList"></div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: SETTINGS (설정)
+           ============================================================ -->
+      <section id="view-settings" class="view hidden">
+        <header class="page-header">
+          <h1 class="page-title"><em>설정</em></h1>
+          <p class="page-subtitle">API 키, 시스템 프롬프트, 양식 기본값을 관리합니다. 모두 브라우저 로컬에만 저장됩니다.</p>
+        </header>
+
+        <div class="card">
+          <h2 class="card-title">API 키</h2>
+          <p class="card-desc">키는 localStorage에만 저장되며, API 호출 시에만 사용됩니다.</p>
+          <div class="field">
+            <label class="label">Anthropic API Key <span class="label-hint">(sk-ant-...)</span></label>
+            <input type="password" class="input" id="anthropicKey" placeholder="sk-ant-...">
+          </div>
+          <div class="field">
+            <label class="label">Google AI Studio API Key</label>
+            <input type="password" class="input" id="googleKey" placeholder="AIza...">
+          </div>
+          <button class="btn btn-primary" id="saveKeysBtn">키 저장</button>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">페르소나 기본 양식</h2>
+          <p class="card-desc">페르소나 메이커가 채워 넣는 기본 양식입니다. 자유롭게 편집하세요.</p>
+          <div class="field">
+            <label class="label">프로필 양식 (일반)</label>
+            <textarea class="textarea code" id="personaTemplate" style="min-height: 200px;"></textarea>
+          </div>
+          <div class="field">
+            <label class="label">NSFW 추가 섹션</label>
+            <textarea class="textarea code" id="personaNsfwTemplate" style="min-height: 200px;"></textarea>
+          </div>
+          <div class="flex-row">
+            <button class="btn btn-primary" id="savePersonaTplBtn">양식 저장</button>
+            <button class="btn btn-ghost" data-reset="personaTemplate">프로필 기본값</button>
+            <button class="btn btn-ghost" data-reset="personaNsfwTemplate">NSFW 기본값</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">시스템 프롬프트</h2>
+          <p class="card-desc">각 생성 모드별 AI 작업 지시문입니다.</p>
+          <div class="field">
+            <label class="label">세계관 생성</label>
+            <textarea class="textarea tall code" id="sp-world"></textarea>
+            <button class="btn btn-sm btn-ghost mt-12" data-reset-sp="world">기본값으로 복원</button>
+          </div>
+          <div class="field">
+            <label class="label">세계관 생성 (NSFW)</label>
+            <textarea class="textarea tall code" id="sp-worldNsfw"></textarea>
+            <button class="btn btn-sm btn-ghost mt-12" data-reset-sp="worldNsfw">기본값으로 복원</button>
+          </div>
+          <div class="field">
+            <label class="label">캐릭터 생성</label>
+            <textarea class="textarea tall code" id="sp-char"></textarea>
+            <button class="btn btn-sm btn-ghost mt-12" data-reset-sp="char">기본값으로 복원</button>
+          </div>
+          <div class="field">
+            <label class="label">캐릭터 생성 (NSFW 지침)</label>
+            <textarea class="textarea tall code" id="sp-charNsfw"></textarea>
+            <button class="btn btn-sm btn-ghost mt-12" data-reset-sp="charNsfw">기본값으로 복원</button>
+          </div>
+          <div class="field">
+            <label class="label">페르소나 생성 (일반)</label>
+            <textarea class="textarea tall code" id="sp-persona"></textarea>
+            <button class="btn btn-sm btn-ghost mt-12" data-reset-sp="persona">기본값으로 복원</button>
+          </div>
+          <div class="field">
+            <label class="label">페르소나 생성 (NSFW)</label>
+            <textarea class="textarea tall code" id="sp-personaNsfw"></textarea>
+            <button class="btn btn-sm btn-ghost mt-12" data-reset-sp="personaNsfw">기본값으로 복원</button>
+          </div>
+          <div class="field">
+            <label class="label">페르소나 보강 (일반)</label>
+            <textarea class="textarea tall code" id="sp-enhance"></textarea>
+            <button class="btn btn-sm btn-ghost mt-12" data-reset-sp="enhance">기본값으로 복원</button>
+          </div>
+          <div class="field">
+            <label class="label">페르소나 보강 (NSFW)</label>
+            <textarea class="textarea tall code" id="sp-enhanceNsfw"></textarea>
+            <button class="btn btn-sm btn-ghost mt-12" data-reset-sp="enhanceNsfw">기본값으로 복원</button>
+          </div>
+          <div class="field">
+            <label class="label">소개 페이지 생성</label>
+            <textarea class="textarea tall code" id="sp-intro"></textarea>
+            <button class="btn btn-sm btn-ghost mt-12" data-reset-sp="intro">기본값으로 복원</button>
+          </div>
+          <div class="field">
+            <label class="label">에셋 태그 (일반)</label>
+            <textarea class="textarea tall code" id="sp-asset"></textarea>
+            <button class="btn btn-sm btn-ghost mt-12" data-reset-sp="asset">기본값으로 복원</button>
+          </div>
+          <div class="field">
+            <label class="label">에셋 태그 (NSFW)</label>
+            <textarea class="textarea tall code" id="sp-assetNsfw"></textarea>
+            <button class="btn btn-sm btn-ghost mt-12" data-reset-sp="assetNsfw">기본값으로 복원</button>
+          </div>
+          <div class="field">
+            <label class="label">소재 추천 (세계관)</label>
+            <textarea class="textarea tall code" id="sp-recommendWorld"></textarea>
+            <button class="btn btn-sm btn-ghost mt-12" data-reset-sp="recommendWorld">기본값으로 복원</button>
+          </div>
+          <div class="field">
+            <label class="label">소재 추천 (캐릭터)</label>
+            <textarea class="textarea tall code" id="sp-recommendChar"></textarea>
+            <button class="btn btn-sm btn-ghost mt-12" data-reset-sp="recommendChar">기본값으로 복원</button>
+          </div>
+          <button class="btn btn-primary" id="savePromptsBtn">시스템 프롬프트 저장</button>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">데이터</h2>
+          <p class="card-desc">저장된 모든 데이터를 백업하거나 복원합니다.</p>
+          <div class="flex-row gap-8">
+            <button class="btn btn-ghost" id="exportDataBtn">전체 내보내기 (.json)</button>
+            <button class="btn btn-ghost" id="importDataBtn">불러오기</button>
+            <input type="file" id="importFile" accept=".json" class="hidden">
+            <button class="btn btn-ghost btn-danger-text ml-auto" id="clearDataBtn">전체 삭제</button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ============ MODAL (세계관/캐릭터/페르소나/소개/양식 편집) ============ -->
+<div class="modal-backdrop hidden" id="modalBackdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">편집</div>
+      <button class="icon-btn" id="modalCloseBtn" style="width: 28px; height: 28px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label class="label">이름</label>
+        <input type="text" class="input" id="modalName">
+      </div>
+      <div class="field">
+        <label class="label">내용</label>
+        <textarea class="textarea code" id="modalBody" style="min-height: 360px;"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="modalCancelBtn">취소</button>
+      <button class="btn btn-primary" id="modalSaveBtn">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DETAIL MODAL (상세 보기) ============ -->
+<div class="modal-backdrop hidden" id="detailBackdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="detailTitle">상세 보기</div>
+      <button class="icon-btn" id="detailCloseBtn" style="width: 28px; height: 28px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <pre class="detail-body" id="detailBody"></pre>
+    </div>
+    <div class="modal-footer" id="detailFooter"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
