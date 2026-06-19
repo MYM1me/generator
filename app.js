@@ -866,7 +866,7 @@ function bindOptsCard(view) {
 function validateGen(view, provider, maxTokens, think) {
   const key = (state.keys[provider] || '').trim();
   if (!key) { toast(`설정에서 ${provider === 'anthropic' ? 'Anthropic' : 'Google'} API 키를 먼저 등록하세요`); setView('settings'); return null; }
-  if (think > 0 && think >= maxTokens) { toast('추론 토큰은 최대 출력 토큰보다 작아야 합니다'); return null; }
+  // 추론 토큰은 출력 예산 위에 별도로 얹어 보내므로(streamLLM 참고) 더 이상 출력보다 작을 필요가 없다.
   return key;
 }
 
@@ -884,9 +884,13 @@ function budgetToEffort(think, maxTokens) {
 
 /* provider 분기 스트리밍. onText/onThinking 콜백으로 델타 전달 */
 async function streamLLM({ provider, key, model, maxTokens, think, systemPrompt, userPrompt, signal, onText, onThinking }) {
+  // 슬라이더의 "최대 출력 토큰"은 화면에 보이는 본문 예산으로 취급한다.
+  // Anthropic/Gemini 모두 max_tokens(=maxOutputTokens)에 추론 토큰이 포함되므로,
+  // 추론 budget을 그 위에 더해 보내 본문 예산이 추론에 잠식되지 않도록 한다.
+  const totalMax = think > 0 ? maxTokens + think : maxTokens;
   if (provider === 'anthropic') {
     const body = {
-      model, max_tokens: maxTokens, system: systemPrompt,
+      model, max_tokens: totalMax, system: systemPrompt,
       messages: [{ role: 'user', content: userPrompt }], stream: true,
     };
     if (think > 0) {
@@ -920,7 +924,7 @@ async function streamLLM({ provider, key, model, maxTokens, think, systemPrompt,
     const body = {
       systemInstruction: { parts: [{ text: systemPrompt }] },
       contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
-      generationConfig: { maxOutputTokens: maxTokens },
+      generationConfig: { maxOutputTokens: totalMax },
     };
     body.generationConfig.thinkingConfig = { thinkingBudget: think > 0 ? think : 0 };
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:streamGenerateContent?alt=sse&key=${encodeURIComponent(key)}`;
