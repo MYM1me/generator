@@ -120,6 +120,17 @@
             <h2 class="card-title">캐릭터 설정</h2>
             <p class="card-desc">사용할 양식을 고르고 아이디어를 입력하세요.</p>
             <div class="field">
+              <label class="label">출력 형식 <span class="label-hint">(키워드형일수록 토큰 절약)</span></label>
+              <div class="radio-group">
+                <input type="radio" name="charFormat" id="cf-mixed" value="mixed" checked>
+                <label for="cf-mixed">혼합</label>
+                <input type="radio" name="charFormat" id="cf-prose" value="prose">
+                <label for="cf-prose">산문형</label>
+                <input type="radio" name="charFormat" id="cf-keyword" value="keyword">
+                <label for="cf-keyword">키워드형</label>
+              </div>
+            </div>
+            <div class="field">
               <label class="label">양식 선택</label>
               <div class="chip-row" id="templateChips"></div>
               <details class="mt-8">

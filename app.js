@@ -278,6 +278,12 @@ const DEFAULT_SYSTEM_PROMPTS = {
 ## 세계관 참조
 - 세계관 정보가 함께 주어지면, 직업·복장·가치관·말투가 그 세계와 충돌하지 않도록 캐릭터를 그 안에 자연스럽게 안착시킬 것.
 
+## 출력 형식 옵션 (사용자가 지정)
+어느 형식이든 양식의 헤더·항목명·순서는 그대로 유지하고, 항목 "내용"의 서술 방식만 달리할 것.
+- **혼합형**: 항목별로 짧은 선언적 문장 + 핵심 키워드 불릿을 함께 사용.
+- **산문형**: 각 항목을 단정형 문장·짧은 문단으로 서술.
+- **키워드형**: 각 항목을 키워드·짧은 구를 쉼표(·중점)로 나열해 최대한 압축. 조사·수식어·완결 문장을 배제해 토큰을 아끼되, 구체성(수치·조건·대사 예시)은 유지.
+
 ## 다인물 시뮬레이션 처리
 - 양식에 인물 블록이 반복되거나 인물 목록 섹션이 있으면 1:1이 아닌 시뮬레이션으로 간주.
 - 각 인물은 서로 다른 개성·말투·외형을 갖되 같은 세계·상황에서 일관되게 공존하게 하고, 인물 간 관계(상하/친소/대립/협력)가 드러나게 할 것.
@@ -1108,13 +1114,15 @@ async function generate() {
     const baseChar = $('#nsfwBaseChar').value.trim();
     if (!baseChar) { toast('기존 캐릭터 설정을 입력해주세요'); return; }
     const nsfwReq = $('#nsfwRequest').value.trim();
+    const nFormat = document.querySelector('input[name="charFormat"]:checked').value;
+    const nFormatLabel = { mixed: '혼합형 (선언적 문장+핵심 키워드 불릿)', prose: '산문형 (단정형 문장·문단 중심)', keyword: '키워드형 (키워드·짧은 구 나열로 압축, 토큰 최소화)' }[nFormat];
     systemPrompt = state.systemPrompts.char + '\n\n' + state.systemPrompts.charNsfw + `
 
 ## NSFW 보강 모드
 이미 작성된 캐릭터 설정에 NSFW 항목만 추가/강화하는 모드입니다.
 - 기존 설정의 성격·과거·말투와 자연스럽게 일관되는 NSFW 설정을 작성하세요.
 - 출력은 NSFW 부분만 마크다운으로(기존 설정 전체를 반복하지 말 것).`;
-    userPrompt = `## 기존 캐릭터 설정\n\`\`\`\n${baseChar}\n\`\`\`\n\n${nsfwReq ? `## 추가 요청\n${nsfwReq}\n\n` : ''}위 캐릭터에 어울리는 NSFW 설정을 위 강화 지침대로 구체적으로 작성해 주세요. 기존 설정은 반복하지 말고 NSFW 항목만 마크다운 헤더로 정리해 출력하세요. (모든 등장 인물은 성인 18세 이상)`;
+    userPrompt = `## 출력 형식\n${nFormatLabel}\n\n## 기존 캐릭터 설정\n\`\`\`\n${baseChar}\n\`\`\`\n\n${nsfwReq ? `## 추가 요청\n${nsfwReq}\n\n` : ''}위 캐릭터에 어울리는 NSFW 설정을 위 강화 지침대로 구체적으로 작성해 주세요. 기존 설정은 반복하지 말고 NSFW 항목만 마크다운 헤더로 정리해 출력하세요. (모든 등장 인물은 성인 18세 이상)`;
     name = $('#charName').value.trim() || `NSFW ${new Date().toLocaleString('ko-KR')}`;
     kind = 'chars';
   } else {
@@ -1123,6 +1131,8 @@ async function generate() {
     const templateBody = $('#charTemplateOverride').value.trim();
     if (!templateBody) { toast('양식이 비어있습니다'); return; }
     const cNsfw = $('#charNsfwMode').checked;
+    const cFormat = document.querySelector('input[name="charFormat"]:checked').value;
+    const cFormatLabel = { mixed: '혼합형 (선언적 문장+핵심 키워드 불릿)', prose: '산문형 (단정형 문장·문단 중심)', keyword: '키워드형 (키워드·짧은 구 나열로 압축, 토큰 최소화)' }[cFormat];
     let worldCtx = '';
     if ($('#useWorldContext').checked) {
       const directBody = $('#worldRefBody').value.trim();
@@ -1132,7 +1142,7 @@ async function generate() {
       if (body) worldCtx = `\n\n## 참조 세계관\n${body}\n`;
     }
     systemPrompt = state.systemPrompts.char + (cNsfw ? '\n\n' + state.systemPrompts.charNsfw : '');
-    userPrompt = `## 사용할 양식\n\`\`\`\n${templateBody}\n\`\`\`\n\n## 캐릭터 아이디어\n${idea}\n${worldCtx}\n위 양식의 모든 빈 칸을 채워 AI 채팅 봇이 연기할 캐릭터 지침을 작성해 주세요. 양식의 구조와 항목명은 그대로 유지하세요.${cNsfw ? '\nNSFW 관련 항목은 위 NSFW 강화 지침에 따라 노골적·구체적으로 채우세요. (모든 등장 인물은 성인 18세 이상)' : ''}`;
+    userPrompt = `## 출력 형식\n${cFormatLabel}\n\n## 사용할 양식\n\`\`\`\n${templateBody}\n\`\`\`\n\n## 캐릭터 아이디어\n${idea}\n${worldCtx}\n위 양식의 모든 빈 칸을 채워 AI 채팅 봇이 연기할 캐릭터 지침을 작성해 주세요. 양식의 구조와 항목명은 그대로 유지하되, 항목 내용은 위 출력 형식에 맞게 서술하세요.${cNsfw ? '\nNSFW 관련 항목은 위 NSFW 강화 지침에 따라 노골적·구체적으로 채우세요. (모든 등장 인물은 성인 18세 이상)' : ''}`;
     name = $('#charName').value.trim() || `캐릭터 ${new Date().toLocaleString('ko-KR')}`;
     kind = 'chars';
   }
