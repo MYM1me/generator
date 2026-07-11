@@ -209,6 +209,15 @@ BAD: "솔직한 말로 부추기기"  →  GOOD: "더 깊이 박아달라고 직
 
 위 GOOD 톤·구체성·직접성을 모든 NSFW 항목에 일관되게 적용하세요.`;
 
+/* ---- 문장 부호 규칙 (모든 생성 요청의 시스템 프롬프트에 자동 첨부) ---- */
+const STYLE_GUARD = `
+
+[문장 부호 규칙 — 절대 준수]
+- 엠 대시(—)와 엔 대시(–) 사용 금지. 단 한 번도 쓰지 말 것.
+- 문장을 대시로 잇지 말고 쉼표·마침표로 끊거나 조사를 활용해 자연스러운 한국어 문장으로 쓸 것.
+- 나열·구분이 필요하면 쉼표(,), 중점(·), 슬래시(/)만 사용.
+- 부연 설명은 괄호( ) 또는 별도 문장으로 처리.`;
+
 /* ---- 시스템 프롬프트 (기본값) ----
    세계관/캐릭터는 'AI 채팅 캐릭터 지침'을 생성하는 것이므로,
    AI가 파싱·행동하기 좋은 구조와 선언적 서술을 강제한다.
@@ -717,6 +726,13 @@ function timeAgo(ts) {
   return Math.floor(d / 86400) + '일 전';
 }
 function safeFileName(s) { return String(s || 'untitled').replace(/[\\/:*?"<>|]/g, '_').replace(/\s+/g, '_'); }
+/* 엠/엔 대시 제거: 줄머리 대시는 불릿(-)으로, 문장 중간 대시는 쉼표로 치환 */
+function removeEmDashes(text) {
+  if (!text || !/[—–]/.test(text)) return text;
+  return text
+    .replace(/^([ \t]*)[—–]\s?/gm, '$1- ')
+    .replace(/\s*[—–]+\s*/g, ', ');
+}
 function toast(msg, ms = 2200) {
   const old = document.querySelector('.toast');
   if (old) old.remove();
@@ -894,6 +910,7 @@ async function streamLLM({ provider, key, model, maxTokens, think, systemPrompt,
   // Anthropic/Gemini 모두 max_tokens(=maxOutputTokens)에 추론 토큰이 포함되므로,
   // 추론 budget을 그 위에 더해 보내 본문 예산이 추론에 잠식되지 않도록 한다.
   const totalMax = think > 0 ? maxTokens + think : maxTokens;
+  systemPrompt = (systemPrompt || '') + STYLE_GUARD;
   if (provider === 'anthropic') {
     const body = {
       model, max_tokens: totalMax, system: systemPrompt,
@@ -1161,6 +1178,8 @@ async function generate() {
       onText: (t) => { state.gen.output += t; renderGenOutput(); },
       onThinking: (t) => { state.gen.thinking += t; renderGenOutput(); },
     });
+    state.gen.output = removeEmDashes(state.gen.output);
+    renderGenOutput();
     setStatus('gen', 'done', '완료');
     if ($('#genAutoSave').checked && state.gen.output.trim()) saveGenOutput(kind, name);
   } catch (err) {
@@ -1266,6 +1285,8 @@ async function generatePersona({ enhance = false, enhanceNsfw = false } = {}) {
       onText: (t) => { state.pm.output += t; renderPmOutput(); },
       onThinking: (t) => { state.pm.thinking += t; renderPmOutput(); },
     });
+    state.pm.output = removeEmDashes(state.pm.output);
+    renderPmOutput();
     setStatus('pm', 'done', '완료');
   } catch (e) {
     if (e.name === 'AbortError') setStatus('pm', '', '중단됨');
