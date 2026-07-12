@@ -1257,7 +1257,10 @@ async function generatePersona({ enhance = false, enhanceNsfw = false } = {}) {
     const idea = $('#pmIdea').value.trim();
     if (!worldBody && !charBody && !idea) { toast('세계관·캐릭터·아이디어 중 하나는 입력해주세요', 3000); return; }
     const template = state.personaTemplate + (isNsfw ? state.personaNsfwTemplate : '');
+    const pFormat = document.querySelector('input[name="personaFormat"]:checked').value;
+    const pFormatLabel = { mixed: '혼합형 (선언적 문장+핵심 키워드 불릿)', prose: '산문형 (단정형 문장·문단 중심으로 각 항목 서술)', keyword: '키워드형 (키워드·짧은 구 나열로 압축, 토큰 최소화)' }[pFormat];
     const parts = [];
+    parts.push(`[출력 형식]\n${pFormatLabel}\n(양식의 항목 구조는 유지하되, 각 항목의 내용을 위 형식으로 작성)`);
     if (worldBody) parts.push(`[세계관]\n${worldBody}`);
     if (charBody) parts.push(`[대화 상대 캐릭터({{char}}) 설정]\n${charBody}`);
     if (idea) parts.push(`[페르소나 아이디어 / 요청]\n${idea}`);
